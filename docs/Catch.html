@@ -1,0 +1,7 @@
+<h1>Catch</h1>
+<h2>Syntax</h2>
+<p>catch/3: Catch exception</p>
+<code>catch[expression-which-can-raise-errors; function-called-with-result; function-called-with-error-message]</code>
+<br/>
+<h2>Example</h2>
+<code>catch[error["Hello!"]; { echo["Success!"] }; { echo["Error: " concat x] }] /=> Error: Hello!</code>

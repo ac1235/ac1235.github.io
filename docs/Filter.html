@@ -1,0 +1,13 @@
+<h1>Filter</h1>
+<h2>Note</h2>
+<p>This function has two issues: it is very slow and works not as expected (in a sence that it takes two seqs).</p>
+<p>For a haskell-like filter function (which runs quite fast) use `hfilter'.</p>
+<br/>
+<code>hfilter[predicate-function; sequence-to-filter]</code>
+<br/>
+<h2>Syntax</h2>
+<p>filter/2: Filter out corresponding elements to 0</p>
+<code>filter[filter-sequence; sequence-to-filter]</code>
+<br/>
+<h2>Example</h2>
+<code>hfilter: {filter[y map x; x]}</code>

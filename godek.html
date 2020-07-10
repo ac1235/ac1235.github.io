@@ -1,0 +1,128 @@
+<link rel='stylesheet' href='styles.css'/>
+
+<h1>Panicz Godek, Scheme</h1>
+
+<p>April 2018</p>
+
+<p>
+Panicz Godek is the author of "A Pamphlet Against R" and long time Schemer.
+In this interview he will tell us what makes his favorite language so special.
+He will also educate us about his idea of a "Wikipedia for Code."
+</p>
+
+<h2 class='me'>How was your first exposure to Scheme?</h2>
+<p>
+I have discovered Scheme through Guile, the official extension language of the GNU project.
+I was developing my own 3d game engine in C++ and I was looking for a language for writing in-game scripts.
+The way Guile was advertising itself made me believe that it is a good idea to use it that way.
+This was around 2008, so I could say that I have 10 years of experience working with Scheme.
+But my style of programming has changed a lot, and it took me some time to learn to appreciate functional programming.
+</p>
+
+<h2 class='me'>What is the main selling point of Scheme?</h2>
+<p>
+To me, the most important "selling point" of Scheme is its ultimate simplicity.
+I have used quotation marks here, because it seems to me that not many people buy this,
+because they don't understand it - probably because they weren't giving it too much thought.
+Scheme has a reputation of being impractical, and I think that this reputation has been deserved.
+For example, there hasn't been a standardized module system for many years,
+and now there are two incompatible "standardized" module systems,
+so the maintainers still don't know how to package their software to make it portable.
+</p>
+
+<h2 class='me'>Does this make promoting Scheme any harder?</h2>
+<p>
+I am aware that this caveat doesn't make "selling" Scheme any easier,
+so perhaps it is indeed better to focus on the simplicity.
+In addition to function calls, the functional subset of the Scheme grammar consists only of four special forms:
+lambda, if, define and quote.
+Most other things can be constructed as macros.
+Extending these primitive forms with set!, begin and call/cc turns Scheme into an imperative language.
+The rest is just function calls.
+</p>
+
+<h2 class='me'>How do Scheme's macro capabilities compare to those of say Scala or Elixir?</h2>
+<p>
+When I look at macro systems in languages such as Elixir or Scala,
+I usually wonder why people are so stubborn to making things more difficult to themselves.
+Of course, the answer is rather simple: people are just unfamiliar with things that they weren't taught at school,
+which probably makes them feel uncomfortable with them.
+Also, Scheme isn't a good pen-and-paper notation, and it is more comfortably used on a computer,
+preferably with editing programs that support s-expressions well.
+The cognoscenti are probably thinking "Emacs" right now, but unfortunately it isn't a particularly beginner-friendly tool.
+But I seem to have departed from your question a bit.
+</p>
+
+<p class='me'>Previously you mentioned things like incompatible module systems
+    and these do indeed make selling a language more difficult.
+    The Prolog language suffers from the same problem, however a large amount of Prolog programmers agree on using
+    one non-standard implementation, SWI Prolog, and its Quintus-like module system.</p>
+
+<h2 class='me'>Do you think the Scheme community could also settle on one implementation any time soon
+    and would that actually make selling the language easier?</h2>
+
+<p>
+Very good question. I don't think that settling on one implementation is likely,
+given that "every Scheme user and their grandma" rolls up their own implementation,
+often with some platform-specific extensions (like Kawa, Biwa, IronScheme or ARMPIT).
+Also, my impression is that Scheme doesn't have a community (but it used to).
+There are implementations, such as Racket, Chicken, Guile or Gambit, that gather some communities around them,
+but I guess that this atypical situation can be confusing to the newcomers to the Scheme world.
+Of course, there are annual Scheme workshops, but they are rather elitist and esoteric.
+Also, I think that many people may find the lack of the figure of the "Benevolent Dictator for Life" confusing,
+and I think that this actually requires more maturity from each single member of community, than having an authoritative figure.
+Perhaps the role closest to BDFL is currently played by Daniel Friedman, but he's an inspirer rather than a dictator.
+</p>
+
+<h2 class='me'>Knowing which languages ​​will help in writing smart blockchain contracts?</h2>
+
+<p>
+Actual question. Contracts are written in solidity, it came out of Python. The language is simple, you can be convinced of it by seeing the number of projects <a href="https://coindataflow.com/en">on this site</a>.
+</p>
+
+<!-- <p>
+With regard to the module system, I have to say, that I once had a dilemma when I wrote a bunch of "machine learning modules" for school.
+I didn't know how to package them to make them useful, which is why I decided to write "A Pamphlet against R".
+</p> -->
+
+<h2 class='me'>So since a universal module system is out of the game,
+    can you think of alternative solutions to this fragmentation problem?</h2>
+
+<p>
+I think that the true power of Scheme is that it allows to write very readable code,
+and perhaps instead of a universal module system, we should have something resembling Wikipedia,
+but containing only Scheme function definitions (and assertions and examples).
+I think that the idea of using a programming language for representing general human knowledge has a lot of potential
+that hasn't yet been exploited.
+</p>
+
+<p class='me'>That indeed is a very interesting idea with implications yet to be found out.
+    Scheme is a descent choice for such a project as it excels at representing certain kinds of human knowledge,
+    but other - at least by default - not so much, e.g. static type information.</p>
+
+<h2 class='me'>Do you think of this as a major hurdle? If so, how would you surpass it?</h2>
+
+<p>
+I have been devoting a lot of my thinking to this subject,
+and I have to admit that I do have an "ontological" problem with types.
+The general idea around Scheme - that we form structures to which we provide interpretations - seems clear and,
+in a sense - necessary. But every type system that I have seen made an impression that it is somewhat contrived.
+For example, Haskell's type system seems very elegant on the surface, and is very useful in many situations,
+but it quickly turns out that it only allows to express a certain set of properties conveniently,
+and others either can't be expressed at all, or expressing them is so complicated,
+that interpreting their expression gets really cumbersome. Then there are some extensions to the Haskell's type system,
+and they all seem rather arbitrary, which makes me think that they are a source of accidental complexity in programming languages,
+which I find rather off-putting.
+</p>
+
+<p class='me'>
+It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures.
+</p>
+
+<p>
+By contrast, I really appreciate the Boyer-Moore theorem prover,
+which is a universal language for expressing "static properties" of programs,
+and it's the very same language that is used for expressing the actual programs.
+</p>
+
+<script src='script.js'></script>

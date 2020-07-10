@@ -1,0 +1,76 @@
+<!DOCTYPE html><html><head><title>code</title></head><body><h1> Code Repository </h1><p><a href="LICENSE.txt">LICENSE.txt</a></p><textarea readonly style='width:800px; height:600px'>This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org>
+</textarea><p><a href="seqs.ant">seqs.ant</a></p><textarea readonly style='width:800px; height:600px'>/Operations on sequencess
+
+/index[sequence; element] => index-sequence
+index: {
+		s: x; e: y;
+		{1 elem x} map
+			{0 elem x} hfilter
+				map[{e eq x}; s] merge range[length[s]]
+	}
+
+/split[sequence; element] => sequence-sequence
+split: {
+		s: x; i: index[x;y];
+		{
+			a: 0 elem x; b: 1 elem x;
+			{(x + a - b) elem s} map range[b]
+		} map
+			(i concat seq[length[s]])
+				merge {(1 elem x) - (0 elem x) + 1}
+					map (seq[-1] concat i) merge (i concat seq[length[s]])
+	}
+</textarea><p><a href="tacit.ant">tacit.ant</a></p><textarea readonly style='width:800px; height:600px'>/ This script is the result of the blog-post `Point-free style programming'
+/ You can check it out: http://ac1235.github.io/blog.html#3
+
+compose: {f: x; fs: tail[args]; {f apply foldr[{seq[y apply x]}; args; fs]}}
+
+train: {f: x; fs: tail[args]; {xs: args; f apply {x apply xs} map fs}}
+</textarea><p><a href="type.ant">type.ant</a></p><textarea readonly style='width:800px; height:600px'>is-seq: {type[x] eq "seq"}
+is-str: {type[x] eq "str"}
+is-fun: {type[x] eq "fun"}
+is-num: {type[x] eq "num"}
+</textarea><p><a href="gnuplot.ant">gnuplot.ant</a></p><textarea readonly style='width:800px; height:600px'>/ Interface gnuplot
+
+plot: {
+  system["gnuplot"; seq["-e"; "plot '-' with lines"; "-p"];
+      apply[concat; {concat[0 elem x; " "; 1 elem x; "\n"]} map (str map x) merge (str map y)]
+      concat "e"]
+  }
+
+dumb: {
+  system["gnuplot"; seq["-e"; "set terminal dumb; plot '-' with lines"; "-p"];
+      apply[concat; {concat[0 elem x; " "; 1 elem x; "\n"]} map (str map x) merge (str map y)]
+      concat "e"]
+  }
+</textarea><p><a href="logic.ant">logic.ant</a></p><textarea readonly style='width:800px; height:600px'>/ Fuzzy Logic
+
+and: min
+
+or: max
+
+not: {1 - x}
+</textarea></body></html>

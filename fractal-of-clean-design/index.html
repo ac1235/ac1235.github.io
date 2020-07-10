@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Begin Jekyll SEO tag v2.3.0 -->
+    <title>Python - A Fractal of Clean Design | ac1235.github.io</title>
+    <meta property="og:title" content="Python - A Fractal of Clean Design" />
+    <meta property="og:locale" content="en_US" />
+    <link
+      rel="canonical"
+      href="https://ac1235.github.io/fractal-of-clean-design.html"
+    />
+    <meta
+      property="og:url"
+      content="https://ac1235.github.io/fractal-of-clean-design.html"
+    />
+    <meta property="og:site_name" content="ac1235.github.io" />
+    <script type="application/ld+json">
+      {
+        "name": null,
+        "description": null,
+        "author": null,
+        "@type": "WebPage",
+        "url": "https://ac1235.github.io/fractal-of-clean-design.html",
+        "image": null,
+        "publisher": null,
+        "headline": "Python - A Fractal of Clean Design",
+        "dateModified": null,
+        "datePublished": null,
+        "sameAs": null,
+        "mainEntityOfPage": null,
+        "@context": "http://schema.org"
+      }
+    </script>
+    <!-- End Jekyll SEO tag -->
+
+    <link
+      href="/assets/css/style.css?v=2600405cc3920e44c5c8b0cf5500b7dbc6ae8917"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      <h1><a href="https://ac1235.github.io/">ac1235.github.io</a></h1>
+
+      <h1 id="python---a-fractal-of-clean-design">
+        Python - A Fractal of Clean Design
+      </h1>
+
+      <p>
+        Some Python programmers like to think of their language as flawless. I
+        personally know some Python programmers claiming that Python is superior
+        to other languages in its clean design and unmatched elegance.
+      </p>
+
+      <p>
+        This however isn’t true. Python has at least as many deep and
+        fundamental flaws as most other languages, despite parts of its
+        community claiming something different.
+      </p>
+
+      <p>
+        Scoping in Python is as broken as you’d expect a half-baked
+        implementation of lexical scoping atop of a half-baked implementation of
+        dynamic scoping to be.
+      </p>
+
+      <p>Take a look at this Scheme code.</p>
+
+      <div class="language-scheme highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">modifier</span> <span class="nv">x</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">f</span><span class="p">)</span>
+    <span class="p">(</span><span class="k">set!</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">x</span><span class="p">))</span>
+    <span class="nv">x</span><span class="p">))</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>The equivalent in Python would be the following.</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">def</span> <span class="nf">modifier</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="n">ref</span> <span class="o">=</span> <span class="p">{</span><span class="s">'contents'</span><span class="p">:</span> <span class="n">x</span><span class="p">}</span>
+  <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">ref</span><span class="p">[</span><span class="s">'contents'</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">ref</span><span class="p">[</span><span class="s">'contents'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">ref</span><span class="p">[</span><span class="s">'contents'</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">closure</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        Non-global variables from a parent scope in Python are accessible as
+        read-only. (Except when they aren’t, but more on that later) This means,
+        that only the values and not the variables themselves can be mutated,
+        which means more needless boilerplate (don’t worry, we’ll talk about
+        nonlocal soon).
+      </p>
+
+      <p>
+        “But what about using classes?” I hear you say. Can’t we fake closures
+        using them? As it turns out, no we can’t.
+      </p>
+
+      <p>Many Python programmers would write the above “function” like this:</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">class</span> <span class="nc">modifier</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+  <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        For those of you like me, who are blind to it when they see it: This is
+        so called elegance.
+      </p>
+
+      <p>
+        You may wonder where the problem with our elegant solution is. Like all
+        other Python programmers, let’s just assume it does exactly the same and
+        continue our journey through the surprisingly wonderful world of Python
+        programming and briefly take a look at classes.
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>This is cool, isn’t it? Let’s go ahead and add a method.</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+  <span class="k">def</span> <span class="nf">ten</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">ten</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        Nice! As it turns out, functions defined inside of a class simply become
+        methods, where the first argument becomes the object itself. Knowing
+        that, let’s make a Counter class using our modifier function/class.
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">class</span> <span class="nc">Counter</span><span class="p">:</span>
+  <span class="n">update</span> <span class="o">=</span> <span class="n">modifier</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">counter</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">counter</span><span class="o">.</span><span class="n">update</span><span class="p">(),</span> <span class="n">counter</span><span class="o">.</span><span class="n">update</span><span class="p">(),</span> <span class="n">counter</span><span class="o">.</span><span class="n">update</span><span class="p">())</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        If modifier is defined as our true modifier function, this code works as
+        you’d expect it to and prints “1 2 3.”
+      </p>
+
+      <p>
+        Using our modifier class however it doesn’t. (See, I told you it won’t
+        work)
+      </p>
+
+      <p>
+        This is the kind of consistency you can expect from a well designed
+        language like Python, and remember, that we just defined a “Counter”
+        class so far as things already start to go downhill regarding clean
+        language design.
+      </p>
+
+      <p>
+        The reason why this works with our true function is because Python
+        interprets the assignment of a function inside a class as a method
+        definition and does its first-arg magic. Since our class only creates an
+        object, that looks like a function (since it is a callable) Python
+        interprets it as a slot definition and tells us, that it is missing the
+        first argument (that we expected to be the object itself) when we call
+        the update slot (not method).
+      </p>
+
+      <blockquote>
+        <p>Explicit is better than implicit.</p>
+      </blockquote>
+
+      <p>
+        I mentioned earlier, that it is not possible to mutate a variable from
+        the outer scope without boilerplate. Well, as it turns out, there is a
+        semi-reliable way to do so. It’s Python 3’s nonlocal keyword and it
+        rocks!
+      </p>
+
+      <p>It allows us to write our modifier function like this.</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">def</span> <span class="nf">modifier</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">nonlocal</span> <span class="n">x</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+  <span class="k">return</span> <span class="n">closure</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        As it turns out, this works perfectly fine! You can make every non-local
+        variable available as readwritable in the current scope, if it is in a
+        parent scope. The only problem is that Python is a bit strange about
+        what exactly counts as a nonlocal.
+      </p>
+
+      <p>Consider the following example (tested under v3.6.2).</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+  <span class="n">y</span> <span class="o">=</span> <span class="mi">10</span>
+  <span class="k">def</span> <span class="nf">g</span><span class="p">():</span>
+    <span class="n">nonlocal</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        Now, does this code work? The answer is simple: perhaps. It all depends
+        on its own level of indentation, because Python does not believe a
+        global variable counts as a non-local.
+      </p>
+
+      <p>
+        Global variables are not non-locals, hence they are non-non-local, which
+        makes them …?
+      </p>
+
+      <p>
+        By now you may have acquainted a taste for clean language design, but in
+        case you haven’t, let me tell you: this is an instance of it.
+      </p>
+
+      <p>
+        I have to admit, that bashing Python based on its implementation of
+        lexical scoping maybe wasn’t fair. Lexical scoping might just not be
+        pythonic, so let’s talk about dynamic scoping in Python for a brief
+        second, because Python’s implementation of dynamic scoping is extremely
+        intriguing.
+      </p>
+
+      <p>
+        It is one of the lesser known features of the language, so I’ll give you
+        a whirlwind introduction ot it.
+      </p>
+
+      <p>
+        See, in Python, a function not only as access to the variables in
+        lexical parent scopes, but also to all of the variables in its callers.
+        And for what its worth, Python takes its duty to support that kind of
+        scoping to new extremes.
+      </p>
+
+      <p>
+        Let’s take a look at my all-time favorite function for a moment: eval.
+        “eval” is a function (for the pythonic definition of “function”), that
+        takes a string and evaluates it as an expression. It then returns its
+        result. What makes eval interesting though, is that the variables in
+        that string expression (which it – the function defined somewhere deep
+        down in the Python implementation of your choice – evaluates) are
+        dispatched to their definition as visible for the caller of eval.
+      </p>
+
+      <p>
+        That means, that Python functions can access their caller’s scope and
+        even modify it.
+      </p>
+
+      <p>Let’s see what fun things we can do with this:</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="s">'hello world'</span>
+    <span class="k">return</span> <span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">insanity</span> <span class="o">=</span> <span class="s">'y'</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="nb">eval</span><span class="p">,</span> <span class="n">insanity</span><span class="p">))</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>This code snippet indeed prints out “hello world.”</p>
+
+      <p>
+        Now I know, that many people think of eval as evil and that their
+        opinion on dynamic scoping isn’t all that positive and open, but I
+        personally don’t see a problem with supporting an obscure feature: there
+        are use-cases for this.
+      </p>
+
+      <p>
+        So let us try to make our own eval function out of pure fun. (Something
+        you can also have with an inherently broken system)
+      </p>
+
+      <p>I start with the function signature:</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">def</span> <span class="nf">my_eval</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+  <span class="o">...</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        Python’s support for call stack manipulation is so good, we only have to
+        write a C-extension in order to get that call-stack and …
+      </p>
+
+      <p>
+        I’m just kidding, Python ships with a powerful module called inspect,
+        which allows you to get non-local variables on the call stack … as
+        readonly. (Things being readonly except when they aren’t seems to be a
+        common theme of Python)
+      </p>
+
+      <p>
+        This means we will basically have to write a C-extension, which provides
+        us with an incallereval, which we can use to complete the code-snippet
+        shown above.
+      </p>
+
+      <blockquote>
+        <p>
+          There should be one – and preferably only one – obvious way to do it.
+        </p>
+      </blockquote>
+
+      <p>
+        Speaking of obvious ways to do something, let’s take a look at the
+        following code snippet in which we (try to) create a chain of functions,
+        that print some values in a list. (Note, that the task is not about
+        printing values, it is about creating functions)
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="n">values</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">countdown</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">countdown</span><span class="p">(</span><span class="n">nextstep</span> <span class="o">=</span> <span class="n">countdown</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="s">" "</span><span class="p">)</span>
+        <span class="n">nextstep</span><span class="p">()</span>
+
+<span class="n">countdown</span><span class="p">()</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        At least this piece of Python code will do exactly what you expect it to
+        and print “5 5 5 5 5 0.”
+      </p>
+
+      <p>
+        Yay? This is because for/in doesn’t make ‘value’ local to its body
+        (watch my wording: I haven’t said “make a new child scope,” since that
+        wouldn’t be possible for a whole list of other design oddities, like not
+        being able to mutate variables from outer scopes without nonlocal
+        boilerplate).
+      </p>
+
+      <p>
+        This however isn’t an issue because there is an – I suppose elegant –
+        solution to this problem:
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="n">values</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">countdown</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">countdown</span>
+        <span class="k">def</span> <span class="nf">countdown</span><span class="p">(</span><span class="n">nextstep</span> <span class="o">=</span> <span class="n">countdown</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="s">" "</span><span class="p">)</span>
+            <span class="n">nextstep</span><span class="p">()</span>
+    <span class="n">closure</span><span class="p">()</span>
+
+<span class="n">countdown</span><span class="p">()</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>And now we get the expected “5 4 3 2 1 0.”</p>
+
+      <p>
+        Well, unless of course your printer is a local variable, in which case
+        you have to use the nonlocal keyword to access it instead of the global
+        keyword required to access globals. (Clean design hitting us again, I
+        suspect)
+      </p>
+
+      <blockquote>
+        <p>Simple is better than complex.</p>
+
+        <p>Complex is better than complicated.</p>
+
+        <p>Flat is better than nested.</p>
+
+        <p>Sparse is better than dense.</p>
+
+        <p>Readability counts.</p>
+      </blockquote>
+
+      <p>
+        But hey, this isn’t that bad. At least you get access to the last
+        element of the object you were iterating on using the loop variable
+        after it finished. (I bet you use this feature all the time)
+      </p>
+
+      <p>
+        Now for what it’s worth and in Python’s defence, the alternative would
+        be to introduce a kind of semi-scope to the language, which holds local
+        variables, though where assigning to any variable but a few truly-locals
+        would set them to the outer scope, which isn’t the cleanest language
+        design either. You see, Python messed that one up much much earlier.
+      </p>
+
+      <p>
+        Next thing on the list: Object orientation. (Or how not to worry about
+        it and happily override without any awareness whatsoever)
+      </p>
+
+      <p>Let’s make a simple Python class.</p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        As code prints 6 as you might expect. Now, imagine for a moment, that
+        you weren’t the author of this class. (and I bet you use classes you
+        aren’t the author of) You most likely don’t know all of the variables it
+        provides and uses internally, and you most likely don’t know all of the
+        methods it provides and uses internally.
+      </p>
+
+      <p>
+        But maybe you are a risk seeker and still inherit from it and write the
+        following.
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">class</span> <span class="nc">B</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        Well congratulations, you have successfully messed up the assumptions of
+        A’s author, because your variable x collides with the A’s variable x and
+        even your method causes A’s one to be overridden (in the worst case,
+        without you noticing it).
+      </p>
+
+      <p>
+        Note, that this does not apply to methods prefixed with two underscores.
+      </p>
+
+      <p>
+        In oder to avoid that, you’d have to either be aware of all of the
+        variables and methods of a parent class or you would have to use some
+        weird naming conventions, like prefixing every variable and method with
+        a class name.
+      </p>
+
+      <p>
+        It seems to me, that the conveniences of dynamic scoping are deeply
+        intermingled into all the other aspects of the Python language as well!
+      </p>
+
+      <p>
+        But can we really blame the designers of Python for that? After all,
+        coming up with a good object system is hard, <a href="https://coindataflow.com/en">some of them</a>.
+      </p>
+
+      <p>
+        The ignorant programmer might thing, that it would be possible to just
+        provide a makeobject function, that creates a fresh minimal object, and
+        setparents function, that alters the delegation tree, and just go on
+        from there, so that the A class from above would look like the
+        following.
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">def</span> <span class="nf">A</span><span class="p">():</span>
+  <span class="bp">self</span> <span class="o">=</span> <span class="n">makeobject</span><span class="p">()</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="k">return</span> <span class="bp">self</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">()</span>
+<span class="n">a</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        The problem with this is that classes aren’t just functions, so a class
+        decorator would have to be made. Also, syntax for setting nested
+        structures through “def” should exist for convenience, then. (This
+        however is not pythonic, as it would add to the consistency between
+        “def” and “=”).
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="nd">@makeclass</span><span class="p">(</span><span class="n">class</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+  <span class="k">def</span> <span class="nf">self</span><span class="o">.</span><span class="n">f</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+  <span class="k">def</span> <span class="nf">self</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        Being ignorant, she might also think, that defining B would then be as
+        easy as the following.
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="nd">@makeclass</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+  <span class="k">def</span> <span class="nf">self</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">f</span><span class="p">()</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        She might also think, that explicit overriding would then be possible
+        through a providerof primitive, that would get the concrete object in
+        the tree, which implements that certain functionality, so that a version
+        of B, where x shall be overridden would look like this, assuming a
+        parentofclass.
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="nd">@makeclass</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+  <span class="n">providerof</span><span class="p">(</span><span class="s">'x'</span><span class="p">,</span> <span class="n">parentofclass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">))</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+  <span class="k">def</span> <span class="nf">self</span><span class="o">.</span><span class="n">g</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        She might also assert, that this system includes metaclasses, since
+        “class” could simply be replaced by any other metaclass, whose
+        constructor would be used as a decorator and that adding a static method
+        would be as free of magic as simply adding a method to the class object
+        using def.
+      </p>
+
+      <p>
+        Also, she might think, that this system is free of all of the mentioned
+        inconsistencies, like the function/callable differentiation.
+      </p>
+
+      <p>She’d be right about all of that. It really can be that simple.</p>
+
+      <p>
+        Even the implementation of class and makeclass would not be black magic.
+      </p>
+
+      <div class="language-python highlighter-rouge">
+        <div class="highlight">
+          <pre
+            class="highlight"
+          ><code><span class="k">class</span> <span class="err">= </span><span class="nc">makeobject</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">class</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">classobject</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">classobject</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">classobject</span> <span class="o">=</span> <span class="n">makeobject</span><span class="p">()</span>
+  <span class="n">setparents</span><span class="p">(</span><span class="n">classobject</span><span class="p">,</span> <span class="n">class</span><span class="p">)</span>
+  <span class="n">classobject</span><span class="o">.</span><span class="n">__bases__</span> <span class="o">=</span> <span class="n">parents</span>
+  <span class="c"># ...</span>
+  <span class="k">def</span> <span class="nf">classobject</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="bp">self</span> <span class="o">=</span> <span class="n">makeobject</span><span class="p">()</span>
+    <span class="c"># Initialize the parent structure (a bunch of tree hopping and makeobjects)</span>
+    <span class="n">constructor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span>
+  <span class="k">return</span> <span class="n">classobject</span>
+<span class="n">class</span><span class="p">((</span><span class="n">class</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span> <span class="n">class</span><span class="o">.</span><span class="n">__call__</span><span class="p">,</span> <span class="n">class</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">makeclass</span><span class="p">(</span><span class="o">*</span><span class="n">parents</span><span class="p">):</span>
+  <span class="k">return</span> <span class="k">lambda</span> <span class="n">constructor</span><span class="p">:</span> <span class="n">class</span><span class="p">(</span><span class="n">parents</span><span class="p">,</span> <span class="n">constructor</span><span class="p">)</span>
+</code></pre>
+        </div>
+      </div>
+
+      <p>
+        You see, Python isn’t the well designed language proponents like to call
+        it. It has its quirks too, and some of them won’t be fixed any time
+        soon.
+      </p>
+    </div>
+    <script src="/assets/javascript/anchor-js/anchor.min.js"></script>
+    <script>
+      anchors.add();
+    </script>
+  </body>
+</html>

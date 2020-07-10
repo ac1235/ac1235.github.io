@@ -1,0 +1,7 @@
+<h1>Repeat</h1>
+<h2>Syntax</h2>
+<p>repeat/3: update accumulator until some condition fails</p>
+<code>repeat[update-function; conditional-function; accumulator]</code>
+<br/>
+<h2>Example</h2>
+<code>repeat[{echo[x]; sleep[500]; x + 1}; {x le 10}; 1]</code>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>AntLang Blog</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<h1>/AntLang Blog</h1>
+		<!-- Links -->
+		<div>
+			<br/><b>June 3 (2016)</b>
+			<br/><a href="#11">ALC Report</a>
+			<br/><b>May 28 (2016)</b>
+			<br/><a href="#10">The future of AntLang</a>
+			<br/><b>May 23 (2016)</b>
+			<br/><a href="#9">AntLang in practice</a>
+			<br/><a href="#8">How to tweet a program</a>
+			<br/><b>May 22 (2016)</b>
+			<br/><a href="#7">The merge function</a>
+			<br/><a href="#6">AntLang code repository</a>
+			<br/><a href="#5">Index of element in sequence</a>
+			<br/><a href="#4">Latest AntLang Patch</a>
+			<br/><b>May 21 (2016)</b>
+			<br/><a href="#3">Point-free style programming</a>
+			<br/><a href="#2">The fibonacci sequence</a>
+			<br/><a href="#1">AntLang on RosettaCode</a>
+		</div>
+		<div>
+			<h2 id="11">ALC Report</h2>
+			<p>The ALC (AntLang Compiler) is currently under active development.</p>
+			<p>Some very cool decisions were felt during development.</p>
+			<p>One of them is that the ALC is written in AntLang itself and can be executed using an other working AntLang implementation.</p>
+			<p>Another cool benefit is that it can be understood by any AntLang programmer, cause it is written using easy to understand constructs - no fancy stuff and no jacking with the main implementation.</p>
+			<p>If you want to help developing or just want to take a look at the compiler, you can check out <a href="https://github.com/ac1235/AntLang">its source code on GitHub</a>.</p>
+		</div>
+		<div>
+			<h2 id="10">The future of AntLang</h2>
+			<p>In these days, the AntLang interpreter is written in Haskell, a nice functional language.</p>
+			<p>For now, Haskell is fast enough, but the AntLang project grows and having a slow tool is not what the community wants.</p>
+			<p>Currently AntLang is rewritten from scratch, but this time it will be implemented as a compiler.</p>
+			<p>The new AntLang version will be completely compatible, so you can switch without rewriting existing code.</p>
+			<p>Compiled code basically runs faster than interpreted code, but with the cost of interactivity.</p>
+			<p>Therefore the AntLang repl, written in Haskell will be maintained, too.</p>
+			<p>The AntLang compiler will be written in AntLang itself and it will generate C-Code.</p>
+			<p>However, the AC (AntLang compiler) is still in the design stage, so things can change.</p>
+			<p>You can help developing the compiler, if you want to.</p>
+			<p>For example, you can write the lexer/scanner (You can find inspiration at the <a href="https://github.com/ac1235/src">AntLang repl source code on github</a>).</p>
+		</div>
+		<div>
+			<h2 id="9">AntLang in practice</h2>
+			<p>AntLang is a powerful tool, but sometimes using it in practice seems inconvenient.</p>
+			<p>However, AntLang can be used for many things.</p>
+			<p>For example some pages on this site, like <a href="code/index.html">the code page</a>
+			are automatically generated using <a href="https://github.com/ac1235/ac1235.github.io/blob/master/index.ant">index.ant</a>.</p>
+			<p>The script collects all files in a directory and creates an index.html file which links to them.</p>
+			<p>I recommend reading the file to any AntLang programmer, because it shows how to use the language in practice.</p>
+			<p>Another auto-generated file is <a href="docs/index.html">the documentation</a>.</p>
+			<p>If you have programmed something similar in AntLang, please publish it, so that everybody can profit from your work.</p>
+		</div>
+		<div>
+			<h2 id="8">How to tweet a program</h2>
+			<p>In this post we discuss how to make extremely short programs
+			using AntLang.</p>
+			<p>We hack around with the lexer/scanner to remove as much whitespace as possible.</p>
+			<p>Say we have the following program.</p>
+			<code>x : { ( 1 + log [ 2 ; 10 ] ) % x } [ 3 ]</code>
+			<p>In AntLang basically any token (syntactical unit) is surrounded with whitespace.</p>
+			<p>However, we need no whitespace around parenthesis.</p>
+			<code>x : {(1 + log[2 ; 10])% x}[3]</code>
+			<p>Much shorter, isn't it?</p>
+			<p>We can also leave whitespace around semicolons.</p>
+			<code>x : {(1 + log[2;10])% x}[3]</code>
+			<p>We need no space around colons, too.</p>
+			<code>x:{(1 + log[2;10])% x}[3]</code>
+			<p>And now the last trick: we need no whitespace after a number.</p>
+			<code>x:{(1+ log[2;10])% x}[3]</code>
+		</div>
+		<div>
+			<h2 id="7">The merge function</h2>
+			<p>AntLang comes with many useful functions and one of them
+			is extremely powerful.</p>
+			<p>The magic power of the so called merge function isn't that obvious.</p>
+			<p>For those who don't know what it does, it groups corresponding elements.</p>
+			<code>merge[seq[1;2;3]; seq[4;5;6]] /=> seq[seq[1;4]; seq[2;5]; seq[3;6]]</code>
+			<p>The function allows us to operate on corresponding elements easily.</p>
+			<p>For example, here is a function that implements vector addition.</p>
+			<code>v+:{map[{+ apply x}; merge[x; y]]} /No amend: "v+" is the function name</code>
+			<p>It adds two sequences element-wise.</p>
+			<code>seq[1; 2; 3] v+ seq[4; 5; 6] /=> seq[5; 7; 9]</code>
+			<p>This should demonstrate why merge is so powerful:
+			it allows us to operate element-wise.</p>
+			<p>Another interesting fact is that merge also is an involutory function.</p>
+			<code>f:{merge apply x}</code>
+			<br/><code>f[f[x]] eq x</code>
+			<p>If you like AntLang, please join the "AntLang user group" on google+.</p>
+			<p>You can ask questions there and talk to other AntLang programmers (The community is new, so don't worry if there are only a few users).</p>
+		</div>
+		<div>
+			<h2 id="6">AntLang code repository</h2>
+			<p>AntLang code can be very interesting and it makes you a better programmer to look at solutions others have found.</p>
+			<p>Maybe someone else has solved a problem you are currently facing.</p>
+			<p>For this reason AntLang got a <a href="code/index.html">code repository</a>!</p>
+			<p>The code there is released under the UNLICENCE and therefore can be used for nearly everything!</p>
+			<p>If you know AntLang or are interested in how it looks, check it out!</p>
+		</div>
+		<div>
+			<h2 id="5">Index of element in sequence</h2>
+			<p>Many programming languages provide a built-in function to find out where in a sequence an element occurs.</p>
+			<p>The version of AntLang on May 22 (2016) has no bif for this purpose,
+			but we can make one on our own.</p>
+			<p>First, the basic construct of the function.</p>
+			<code>index: {sequence: x; element: y; ..}</code>
+			<p>We can generate a sequence of integers (from 0) to know which index corresponds to which element.</p>
+			<code>range[length[sequence]]</code>
+			<p>We also have to create a boolean sequence to check if the element is the one we are looking for or not.</p>
+			<code>map[{element eq x}; sequence]</code>
+			<p>Now merge the sequences together.</p>
+			<code>map[{element eq x}; sequence] merge range[length[sequence]]</code>
+			<p>The new sequence lists the indexes and also contains information about the content (element or not).</p>
+			<p>We can filter out the ones, starting with a boolean 1, because they contain the indices we need.</p>
+			<code>{0 elem x} hfilter map[{element eq x}; sequence] merge range[length[sequence]]</code>
+			<p>Note, that we can write {1 eq 0 elem x}, but this version is more compact, because we already have boolean values.</p>
+			<p>Now every pair in our sequence starts with a 1, but we are only interested in the second element (start from 0 -> 1st element)</p>
+			<code>{1 elem x} map {0 elem x} hfilter map[{element eq x}; sequence] merge range[length[sequence]]</code>
+			<p>We can wrap the solution in our function to reuse it later.</p>
+			<code>index: {sequence: x; element: y; {1 elem x} map {0 elem x} hfilter map[{element eq x}; sequence] merge range[length[sequence]]}</code>
+		</div>
+		<div>
+			<h2 id="4">Latest AntLang Patch</h2>
+			<p>This morning I patched the executable and added 2 functions.</p>
+			<p>If you need one of them, feel free to download AntLang again, it is backward compatible.</p>
+			<p>In this blog post I introduce both functions and why I decided to add them.</p>
+			<p>The first one is the `arguments'-function.</p>
+			<p>It is arity 0 and returns a sequence of command line arguments.</p>
+			<p>This function only works inside of scripts, therefore you can not use it interactively.</p>
+			<p>The sequence contains only strings, so if you need numbers from the console you have to convert (for example using `eval').</p>
+			<p>The second function is the `wread'-function.</p>
+			<p>Consider the following problem: You want to work with some kind of data,
+			but it isn't on you local machine.</p>
+			<p>Before this patch, you had to download the data using curl or something like this,
+			but now AntLang comes with a built-in way to do so.</p>
+			<p>For example, the following code snippet downloads the content of this website.</p>
+			<code>wread["http://ac1235.github.io/blog.html"]</code>
+			<p>I recommend downloading the newest AntLang version,
+			because it is just one file and the new features should be interesting for scientists (extract data from website) and programmers (extract data from command-line).</p>
+			<p>The next release includes the same functionality, but for a different operating system... Stay tuned!</p>
+		</div>
+		<div>
+			<h2 id="3">Point-free style programming</h2>
+			<p>Point-free style is constructing a function only out of other functions, without named arguments, etc.</p>
+			<p>AntLang2000 (the next version) may supports built-in facilities for this,
+			but for now, we have to build our own functions for this.</p>
+			<p>One very common function is the composition function.</p>
+			<code>(f[g[h[x; y]]]) eq compose[f; g; h][x; y]</code>
+			<p>Using this function, we can build the following function more easy.</p>
+			<code>f: {-[x + y]}</code>
+			<p>Using composition it looks like this.</p>
+			<code>f: compose[-; +]</code>
+			<p>We can build the composition function in AntLang using a fold.</p>
+			<code>compose: {f: x; fs: tail[args]; {f apply foldr[{seq[y apply x]}; args; fs]}}</code>
+			<p>Another useful function, let's call it the train function, can simplify the following term.</p>
+			<code>{f[g[x]; h[x]]} --> train[f; g; h]</code>
+			<p>Using trains, we can implement a tangent function.</p>
+			<code>tan': train[%; sin; cos]</code>
+			<p>We can implement train by mapping the last functions over the arguments and then applying the first one.</p>
+			<code>train: {f: x; fs: tail[args]; {xs: args; f apply {x apply xs} map fs}}</code>
+		</div>
+		<div>
+			<h2 id="2">The fibonacci sequence</h2>
+			<p>The fibonacci sequence is very interesting from a mathematical point of view.</p>
+			<p>In this blog post, I try to reconstruct it using the AntLang programming language.</p>
+			<p>I recommend reading this post to every AntLang newcomer, because it not only shows
+			how to code in AntLang, it shows how to think in it.</p>
+			<p>OK, so let's get started. The fibonacci numbers can be built on top of two start numbers.</p>
+			<code>start: seq[0; 1]</code>
+			<p>Then it can be extended, by adding up the last two elements.</p>
+			<code>0, 1, 1, 2, 3, 5, 8, ...</code>
+			<p>The extend function appends one element to it.</p>
+			<code>extend: {x concat seq[(-1 elem x) + (-2 elem x)]}</code>
+			<br/><code>extend[extend[start]] /=> seq[0; 1; 1; 2]</code>
+			<p>To extend it y-times, we can fold over a sequence with length y.</p>
+			<code>extendy: {foldl[extend; x; range[y]]}</code>
+			<br/><code>extendy[start; 2] /=> seq[0; 1; 1; 2]</code>
+			<p>To provide a single-function interface, we can strip down the whole thing to one line.</p>
+			<code>fibonacci: {foldl[{x concat seq[(-1 elem x) + (-2 elem x)]}; seq[0; 1]; range[x]]}</code>
+			<br/><code>fibonacci[5] /=> seq[0; 1; 1; 2; 3; 5; 8]</code>
+			<p>And were done!</p>
+			<p>I hope this helps you to see how to think in AntLang.</p>
+			<p>If you have questions, you can send me an email (anthony.nc[at]web.de).</p>
+		</div>
+		<div>
+			<h2 id="1">AntLang on RosettaCode</h2>
+			<p>AntLang is a powerful tool for solving all kinds of problems.</p>
+			<p>The information on the <a href="index.html">home page</a> helps you to learn AntLang,
+			but if you already know the basic language, it makes you a better programmer to  simply look at real code.</p>
+			<p>Therefore, AntLang joined RosettaCode!</p>
+			<p>RosettaCode is a page listing different tasks and corresponding solutions in many programming languages.</p>
+			<p>The <a href="http://rosettacode.org/wiki/Category:AntLang">AntLang page on RosettaCode</a> is a nice place to increase your AntLang skills.</p>
+			<p>However, they are only a few problems solved in AntLang, so you can help!</p>
+			<p>You can join <a href="http://rosettacode.org/wiki/Rosetta_Code">RosettaCode</a>
+			and solve problems using AntLang programming language.</p>
+			<p>PS: RosettaCode is a great wiki, even if you aren't skilled enough to solve tasks,
+			I recommend you to just look at solutions others have found.</p>
+		</div>
+	</body>
+</html>

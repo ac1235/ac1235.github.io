@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Build AntLang</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<h1>/Build AntLang from source</h1>
+		<div>
+			<h2>Step 1</h2>
+			<p>This website provides AntLang executables for various systems.</p>
+			<p>If there is one for your OS, you can just follow <a href="tutorial.html">the tutorial</a>.</p>
+		</div>
+		<div>
+			<h2>Step 2</h2>
+			<p>Clone <a href="https://github.com/ac1235/src">this git-repository</a>.</p>
+			<p>You will need all haskell files (.hs) and all grammar files (.y).</p>
+			<p>You can clone using git.</p>
+			<code>git clone "https://github.com/ac1235/src.git"</code>
+		</div>
+		<div>
+			<h2>Step 3</h2>
+			<p>You need GHC and Happy to follow.</p>
+			<p>Both are part of <a href="https://www.haskell.org/platform/">the Haskell platform</a>.</p>
+			<p>Install it for your OS and then goto step 4.</p>
+		</div>
+		<div>
+			<h2>Step 4</h2>
+			<p>Generate Parser.hs from the grammar file using Happy.</p>
+			<code>happy -o Parser.hs grammar.y</code>
+		</div>
+		<div>
+			<h2>Step 5</h2>
+			<p>Build the executable.</p>
+			<code>ghc -O2 -rtsopts -o EXECUTABLE Main.hs</code>
+		</div>
+		<div>
+			<h2>Step 6</h2>
+			<p>Follow <a href="tutorial.html">the AntLang tutorial</a> to see how to call the executable correctly.</p>
+		</div>
+	</body>
+</html>

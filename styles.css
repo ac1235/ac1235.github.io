@@ -1,0 +1,14 @@
+/* General Style */
+* { font-family: sans-serif; color: black; }
+h1 { font-size: 1.3em; font-weight: bold; }
+p { font-size: 1em; }
+
+/* Code Style */
+code, pre { font-family: monospace; }
+
+/* Interview Question Class */
+h2,h3 { font-size: 1em; font-weight: bold; }
+.me { font-style: italic; }
+
+/* Limit Content Width */
+body { margin-left: 120px; width: 660px; }  

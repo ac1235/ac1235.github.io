@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>AntLang Tutorial</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<h1>/AntLang Tutorial</h1>
+		<h2>/Author: Anthony Cipriano</h2>
+		<div>
+			<h2>About the tutorial</h2>
+			<p>AntLang is a new programming language, which indeed is very under-documented.
+			However, this tutorial should bring you through the steps from the installation to the first library.</p>
+		</div>
+		<div>
+			<h2>Installation</h2>
+			<p>First you have to install AntLang. If there is no executable for your OS, check out <a href="build.html">the build instructions</a>.</p>
+			<p>After you have downloaded the file, you may have to run the following command to get execution permition.</p>
+			<code>chmod +x ./ant</code>
+			<p>Then you can run the executable.</p>
+			<code>./ant</code>
+			<p>AntLang can crash your machine, if you write bad code. Therefore you can "sandbox" it,
+			by giving it limited access to your memory for safety.</p>
+			<code>./ant +RTS -M100m #i.e. 100MB</code>
+			<p>For a better experience you can use the external program rlwrap.
+			It isn't needed to follow this tutorial, so don't worry if you haven't installed it.</p>
+			<code>rlwrap ./ant +RTS -M100m</code>
+			<p>This command should open a top-level. To test it type in the following.</p>
+			<code>echo["Hello!"]</code>
+			<p>If this prints the message, everything is setted up correctly.</p>
+			<p>On Windows, you can simply call the executable with the shown arguments.</p>
+			<code>ant.exe +RTS -M100m</code>
+		</div>
+		<div>
+			<h2>Arithmetic</h2>
+			<p>AntLang can operate on numeric data, like integers or doubles.</p>
+			<p>For example enter the following calculation (whitespace is important).</p>
+			<code>2 + 2</code>
+			<p>This should return 4.</p>
+			<p>You can write more complex expressions, too. However, the result may differ from what you expect it to be.</p>
+			<code>1 % 2 + 3   (AntLang uses `%'-sign for division)</code>
+			<p>If you evaluate this using classic precedence rules you get back 3.5, but AntLang says it is 0.2.</p>
+			<p>This is a very important lesson in learning to master AntLang: It evaluates from right to left.</p>
+			<p>This seems weird at first, but if you think about it, it is very simple.</p>
+			<p>You don't have to remember rules of precedence, because whatever is on the right is done first. No exception.</p>
+			<p>If you want to break this behavoir, you can use parenthesis.</p>
+			<code>(1 % 2) + 3</code>
+			<p>Now you should get back 3.5.</p>
+			<p>You can also do floating-point number arithmetic.</p>
+			<code>0.2 + 0.1</code>
+			<p>This returns a value very near to 0.3 (but not exactly 0.3).</p>
+			<p>However, many languages behave like this, so this should not be a reason to hate AntLang.</p>
+			<p>AntLang supports subtraction (-), multiplication (*) and exponentation (expt), too.</p>
+			<p>If you may find the name for exponentation weird, here is how you can use it like any other operator.</p>
+			<code>8 expt 2</code>
+			<br/><code>64 expt 0.5</code>
+		</div>
+		<div>
+			<h2>Comparision</h2>
+			<p>You can compare values using AntLang.</p>
+			<p>The comparision operators are greater-than (gt), lower-than (lt), equal (eq), not-equal (ne),
+			greater-or-equal (ge) and lower-or-equal (le)</p>
+			<code>4 le 2 + 2</code>
+			<p></p>The rule learned in the arithmetic section, applies to comparision, too.
+			<br/>Therefore "2 + 2 eq 4" means "2 + (2 eq 4)" and not "(2 + 2) eq 4". You have to put parenthesis there.</p>
+		</div>
+		<div>
+			<h2>More functions</h2>
+			<p>AntLang has nothing like operators. They are normal functions, like sin or echo.</p>
+			<p>You can apply a function to its arguments using M-Expressions.</p>
+			<code>sin[2]</code>
+			<p>Since operators are normal functions, they can be applied the same way.</p>
+			<code>+[2; 2] eq 2 + 2</code>
+			<p>If a function takes two arguments, you can put it between the arguments, for better readability.</p>
+			<code>write["file.txt"; "Hello, World!"]</code>
+			<br/><code>"file.txt" write "Hello, World!"</code>
+			<p>The write function performs some file-I/O and is just an example. This works for every other function, too.</p>
+		</div>
+		<div>
+			<h2>Variables</h2>
+			<p>You know how to perform several computations in AntLang, but sometimes you want to store a value to a variable,
+			to use it later</p>
+			<p>If you already know a programming language like Rust or Nim, be careful: AntLang variables are immutable.</p>
+			<p>Once they have a value it can't (or at least shouldn't) change.</p>
+			<p>Therefore a variable is only another name for its value.</p>
+			<code>pi: 3.141592654</code>
+			<p>You can assign a variable to a value like shown above.</p>
+			<p>More formal the colon-syntax looks as follows.</p>
+			<code>variable: value</code>
+			<p>The value can be a computation, which directly executes.</p>
+			<code>x: 2 + 2</code>
+			<p>Then, after the definition, you can use the value by name.</p>
+			<code>cos[pi]</code>
+		</div>
+		<div>
+			<h2>Own functions</h2>
+			<p>You can build own functions by putting computations into curly braces.</p>
+			<p>For example you can implement the mathematical function f(x) = sin(x)%x.</p>
+			<code>f: {sin[x] % x}</code>
+			<p>And you can use it like any other function.</p>
+			<code>f[2]</code>
+			<p>However, it isn't needed to assign the function expression to a variable.</p>
+			<code>{sin[x] % x}[2]</code>
+			<p>The first argument in a function is always called x, the second one y and the third z.</p>
+			<code>g:{(2 * x) + y}</code>
+			<br/><code>10 g 20</code>
+			<p>The function itself is called self.</p>
+			<code>/Wrong:</code>
+			<br/><code>f:{f}</code>
+			<br/><code>/Right:</code>
+			<br/><code>f:{self}</code>
+			<p>The sequence of arguments is stored in args.</p>
+			<code>sequence:{args}</code>
+			<p>You can put private variables inside a function expression, too.</p>
+			<code>h:{a: x + y; b: x * y; a + b + z}</code>
+		</div>
+		<div>
+			<h2>Sequences</h2>
+			<p>AntLang supports a datatype called a sequence.</p>
+			<p>A sequence is a list of elements, which can be numbers, strings or other sequences.</p>
+			<p>The seq-function constructs them.</p>
+			<code>x: seq[1;2;3]</code>
+			<p>For a sequence of ordered values, i.e. a range, you can construct them using the range-function.</p>
+			<code>y: range[10]</code>
+			<p>You can do several operations with sequences.</p>
+			<code>x concat y /Concatenation</code>
+			<br/><code>map[sin; x] /Maps</code>
+			<br/><code>foldl[*; 1; x] /Folds (foldl/foldr)</code>
+			<p>However, there is one super function: merge. It takes some sequences and zips them by producing sequences.</p>
+			<code>merge[seq[1;2;3]; seq[4;5;6]] /=> seq[seq[1;4]; seq[2;5]; seq[3;6]]</code>
+		</div>
+		<div>
+			<h2>Files</h2>
+			<p>If you have AntLang code and you want to store it, you can put it in a file and reload it later.</p>
+			<p>By convention the files end with ".ant"</p>
+			<code>my-file.ant</code>
+			<p>You can read the file linewise, while each line should be a valid AntLang term using load.</p>
+			<code>load["my-file.ant"]</code>
+		</div>
+		<div>
+			<h2>Further reading</h2>
+			<p>If you want to program using AntLang, you now have the basics.</p>
+			<p>However, they are many functions implemented in AntLang not shown in this tutorial.</p>
+			<p>You can check them out in the <a href="docs/index.html">documentation</a>.</p>
+			<p>If you have questions, ask the "AntLang user group" community at  google+ (you have to join to ask questions).</p>
+		</div>
+	</body>
+</html>
